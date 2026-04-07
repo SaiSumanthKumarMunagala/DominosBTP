@@ -1,0 +1,18 @@
+### Place a pizza order
+POST http://localhost:4004/api/order/placeOrder
+Content-Type: application/json
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+{
+  "customerId": "c001",
+  "storeId": "str01",
+  "orderType": "DELIVERY",
+  "items": [
+    { "menuItemId": "mi02", "size": "LARGE", "quantity": 1 },
+    { "menuItemId": "mi08", "size": "REGULAR", "quantity": 1 },
+    { "menuItemId": "mi10", "size": "REGULAR", "quantity": 2 }
+  ],
+  "paymentMethod": "CARD",
+  "tipAmount": 3.00,
+  "specialInstructions": "Ring the doorbell twice"
+}
