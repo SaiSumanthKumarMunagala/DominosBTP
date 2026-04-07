@@ -1,0 +1,115 @@
+### ═══════════════════════════════════════════════
+###  DOMINO'S CAP — FULL FLOW TEST
+###  Place this file in the project root: full-flow-test.http
+###  Requires VS Code "REST Client" extension
+###
+###  Auth headers (base64-encoded "user:pass"):
+###    customer:customer  → Y3VzdG9tZXI6Y3VzdG9tZXI=
+###    store_mgr:store    → c3RvcmVfbWdyOnN0b3Jl
+###    admin:admin        → YWRtaW46YWRtaW4=
+### ═══════════════════════════════════════════════
+
+### 1. Browse the menu
+GET http://localhost:4004/api/order/MenuItems?$top=10
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+### 2. Find stores
+GET http://localhost:4004/api/order/Stores
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+### 3. Validate a coupon
+GET http://localhost:4004/api/order/validateCoupon(code='WELCOME20',subtotal=50)
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+### 4. Place an order
+# @name placeOrder
+POST http://localhost:4004/api/order/placeOrder
+Content-Type: application/json
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+{
+  "customerId": "c001",
+  "storeId": "str01",
+  "orderType": "DELIVERY",
+  "items": [
+    { "menuItemId": "mi02", "size": "LARGE", "quantity": 1 },
+    { "menuItemId": "mi08", "size": "REGULAR", "quantity": 1 },
+    { "menuItemId": "mi10", "size": "REGULAR", "quantity": 2 }
+  ],
+  "couponCode": "WELCOME20",
+  "paymentMethod": "CARD",
+  "tipAmount": 3.00,
+  "specialInstructions": "Ring the doorbell twice"
+}
+
+### 5. Track the order
+GET http://localhost:4004/api/order/trackOrder(orderId='{{placeOrder.response.body.ID}}')
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+### 6. Store: confirm the order
+POST http://localhost:4004/api/store/confirmOrder
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{ "orderId": "{{placeOrder.response.body.ID}}" }
+
+### 7. Store: start preparing
+POST http://localhost:4004/api/store/startPreparing
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{ "orderId": "{{placeOrder.response.body.ID}}" }
+
+### 8. Store: mark baking
+POST http://localhost:4004/api/store/markBaking
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{ "orderId": "{{placeOrder.response.body.ID}}" }
+
+### 9. Store: quality check
+POST http://localhost:4004/api/store/qualityCheck
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{ "orderId": "{{placeOrder.response.body.ID}}" }
+
+### 10. Store: dispatch with delivery agent
+POST http://localhost:4004/api/store/dispatchOrder
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{
+  "orderId": "{{placeOrder.response.body.ID}}",
+  "agentId": "da01"
+}
+
+### 11. Store: mark delivered
+POST http://localhost:4004/api/store/markDelivered
+Content-Type: application/json
+Authorization: Basic c3RvcmVfbWdyOnN0b3Jl
+
+{ "orderId": "{{placeOrder.response.body.ID}}" }
+
+### 12. Customer: rate the order
+POST http://localhost:4004/api/order/rateOrder
+Content-Type: application/json
+Authorization: Basic Y3VzdG9tZXI6Y3VzdG9tZXI=
+
+{
+  "orderId": "{{placeOrder.response.body.ID}}",
+  "rating": 5,
+  "feedback": "Hot, fresh, and delicious!"
+}
+
+### 13. Admin: sales report
+GET http://localhost:4004/api/admin/getSalesReport(storeId='str01',fromDate=2025-01-01,toDate=2026-12-31)
+Authorization: Basic YWRtaW46YWRtaW4=
+
+### 14. Admin: top selling items
+GET http://localhost:4004/api/admin/getPopularItems(storeId='str01',limit=5)
+Authorization: Basic YWRtaW46YWRtaW4=
+
+### 15. Admin: integration audit log
+GET http://localhost:4004/api/admin/IntegrationLogs?$top=20&$orderby=timestamp desc
+Authorization: Basic YWRtaW46YWRtaW4=
