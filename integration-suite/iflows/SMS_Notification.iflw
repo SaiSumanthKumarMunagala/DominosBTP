@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Integration Suite — Integration Flow: SMS_Notification
+  
+  ROUTE:
+    CAP Application → Integration Suite → Twilio SMS API
+  
+  STEPS:
+    1. Receive HTTP POST from CAP service with {phone, message}
+    2. Content Modifier: add Twilio auth headers
+    3. Map payload to Twilio format (form-urlencoded)
+    4. POST to Twilio Messages API
+    5. Map response back to CAP format
+    6. On failure: log and continue (non-blocking)
+  
+  CONFIGURATION:
+    Credential Alias: TwilioAuth (AccountSID:AuthToken as Basic)
+    Endpoint: https://api.twilio.com/2010-04-01/Accounts/{AccountSID}/Messages.json
+    From Number: +1-555-DOMINOS (configured in Twilio)
+    
+  REQUEST MAPPING (Groovy):
+    def body = new JsonSlurper().parseText(message.getBody(String))
+    def formData = "To=${URLEncoder.encode(body.to, 'UTF-8')}" +
+                   "&From=${URLEncoder.encode(property.twilioFromNumber, 'UTF-8')}" +
+                   "&Body=${URLEncoder.encode(body.body, 'UTF-8')}"
+    message.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+    message.setBody(formData)
+    
+  RESPONSE MAPPING (Groovy):
+    def resp = new JsonSlurper().parseText(message.getBody(String))
+    def result = [
+        success: resp.status in ['queued', 'sent'],
+        messageId: resp.sid,
+        status: resp.status
+    ]
+    message.setBody(JsonOutput.toJson(result))
+    
+  ERROR HANDLING:
+    Retry: 2 attempts (1s, 3s)
+    On final failure: log to IntegrationLogs, do NOT block order flow
+-->
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   id="SMS_Notification">
+    <bpmn2:collaboration id="SMS_Notification_Collab">
+        <bpmn2:participant id="P_CAP" name="CAP Service" />
+        <bpmn2:participant id="P_IS" name="Integration Suite" />
+        <bpmn2:participant id="P_Twilio" name="Twilio API" />
+    </bpmn2:collaboration>
+</bpmn2:definitions>

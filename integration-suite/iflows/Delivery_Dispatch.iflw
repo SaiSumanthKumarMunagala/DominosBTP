@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Integration Suite — Integration Flow: Delivery_Dispatch
+  
+  ROUTE:
+    CAP Application → Integration Suite → Delivery Partner API
+  
+  STEPS:
+    1. Receive dispatch request from CAP (orderId, pickup, dropoff, items)
+    2. Lookup store geo-coordinates from master data
+    3. Content-based routing:
+       - If internal fleet available → route to Internal Delivery API
+       - If not → route to DoorDash Drive API / Uber Direct
+    4. Map payload to partner-specific format
+    5. Call delivery partner with retry
+    6. Map response (trackingId, estimatedMinutes)
+    7. Callback: update order with tracking info
+  
+  CONFIGURATION:
+    DoorDash Drive API:
+      Credential: DoorDashDeveloperKey
+      Endpoint: https://openapi.doordash.com/drive/v2/deliveries
+      
+    Uber Direct:
+      Credential: UberDirectBearer
+      Endpoint: https://api.uber.com/v1/deliveries
+  
+  MAPPING (DoorDash):
+    {
+      external_delivery_id: orderId,
+      pickup_address: storeAddress,
+      pickup_phone_number: storePhone,
+      dropoff_address: deliveryAddress,
+      dropoff_phone_number: customerPhone,
+      order_value: totalAmount * 100,  // cents
+      items: items.map(i => ({name: i.name, quantity: i.qty}))
+    }
+-->
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   id="Delivery_Dispatch">
+    <bpmn2:collaboration id="Delivery_Collab">
+        <bpmn2:participant id="P_CAP" name="CAP Service" />
+        <bpmn2:participant id="P_IS" name="Integration Suite" />
+        <bpmn2:participant id="P_DD" name="DoorDash Drive" />
+        <bpmn2:participant id="P_Uber" name="Uber Direct" />
+    </bpmn2:collaboration>
+</bpmn2:definitions>

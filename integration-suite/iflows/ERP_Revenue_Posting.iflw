@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Integration Suite — Integration Flow: ERP_Revenue_Posting
+  
+  ROUTE:
+    CAP Application → Integration Suite → SAP S/4HANA Cloud
+  
+  TRIGGER:
+    Event Mesh topic: dominos/order/delivered
+    (fires when an order reaches DELIVERED status)
+  
+  STEPS:
+    1. Subscribe to Event Mesh topic "dominos/order/delivered"
+    2. Enrich: call CAP OData to fetch full order details
+    3. Map order data → S/4HANA Journal Entry format
+    4. POST to S/4HANA API_JOURNALENTRY_V2
+    5. Capture document number from response
+    6. Update CAP order with ERP document reference
+  
+  CONFIGURATION:
+    S/4HANA Destination: S4HC_BACKEND
+    API: /sap/opu/odata/sap/API_JOURNALENTRY/A_JournalEntry
+    
+  MESSAGE MAPPING:
+    Source (CAP Order):
+      orderId, orderNumber, totalAmount, taxAmount, storeCode, orderDate
+    
+    Target (S/4HANA Journal Entry):
+      CompanyCode:        from store → company code mapping
+      DocumentDate:       orderDate
+      PostingDate:        orderDate
+      DocumentType:       "RV" (Revenue)
+      DocumentHeaderText: "Pizza Order {orderNumber}"
+      Items[0]:
+        GLAccount:          "400000" (Revenue)
+        DebitCreditCode:    "S" (Credit = Revenue)
+        AmountInTransCrcy:  totalAmount - taxAmount
+      Items[1]:
+        GLAccount:          "154000" (Tax Payable)
+        DebitCreditCode:    "S"
+        AmountInTransCrcy:  taxAmount
+      Items[2]:
+        GLAccount:          "113100" (Accounts Receivable / Cash)
+        DebitCreditCode:    "H" (Debit)
+        AmountInTransCrcy:  totalAmount
+  
+  ERROR HANDLING:
+    Retry: 5 attempts, exponential backoff
+    Dead Letter Queue: "erp_posting_failures"
+    Alert: Critical — immediate email to finance-ops@dominos.com
+    Compensation: flag order for manual reconciliation
+-->
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   id="ERP_Revenue_Posting">
+    <bpmn2:collaboration id="ERP_Posting_Collab">
+        <bpmn2:participant id="P_EventMesh" name="SAP Event Mesh" />
+        <bpmn2:participant id="P_IS" name="Integration Suite" />
+        <bpmn2:participant id="P_CAP" name="CAP Service" />
+        <bpmn2:participant id="P_S4" name="SAP S/4HANA Cloud" />
+    </bpmn2:collaboration>
+</bpmn2:definitions>

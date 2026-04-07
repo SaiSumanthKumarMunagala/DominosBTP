@@ -1,0 +1,67 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "com.dominos.pizzaorder",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/api/order/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "sap-icon://meal" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "com.dominos.pizzaorder.i18n.i18n" }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": { "synchronizationMode": "None", "operationMode": "Server", "autoExpandSelect": true }
+      }
+    },
+    "routing": {
+      "routes": [
+        { "pattern": ":?query:", "name": "MenuList", "target": "MenuList" },
+        { "pattern": "Orders({key}):?query:", "name": "OrderDetail", "target": "OrderDetail" }
+      ],
+      "targets": {
+        "MenuList": {
+          "type": "Component",
+          "id": "MenuList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/MenuItems",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled"
+            }
+          }
+        },
+        "OrderDetail": {
+          "type": "Component",
+          "id": "OrderDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": { "settings": { "contextPath": "/Orders" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+ID;code;name;address;city;state;zipCode;country;phone;latitude;longitude;isOpen;deliveryRadius;avgPrepTime;rating
+str01;NYC01;Domino's Times Square;1560 Broadway;New York;NY;10036;USA;+1-212-555-0101;40.7580;-73.9855;true;5.0;20;4.5
+str02;SFO01;Domino's Mission District;2500 Mission St;San Francisco;CA;94110;USA;+1-415-555-0102;37.7565;-122.4188;true;4.5;18;4.3
+str03;CHI01;Domino's Downtown Chicago;233 S Wacker Dr;Chicago;IL;60606;USA;+1-312-555-0103;41.8789;-87.6359;true;5.0;22;4.4
+str04;DAL01;Domino's Deep Ellum;2816 Elm St;Dallas;TX;75226;USA;+1-214-555-0104;32.7841;-96.7830;true;6.0;19;4.2
+str05;MIA01;Domino's South Beach;1001 Ocean Dr;Miami;FL;33139;USA;+1-305-555-0105;25.7825;-80.1303;true;4.0;21;4.6

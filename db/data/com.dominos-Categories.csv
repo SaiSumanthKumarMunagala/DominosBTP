@@ -1,0 +1,6 @@
+ID;code;name;description;imageUrl;displayOrder;isActive
+cat01;PIZZA;Pizzas;Hand-tossed, fresh-baked pizzas with premium toppings;/img/cat-pizza.jpg;1;true
+cat02;SIDES;Sides;Garlic bread, chicken wings, and more;/img/cat-sides.jpg;2;true
+cat03;DRINKS;Beverages;Chilled drinks and refreshments;/img/cat-drinks.jpg;3;true
+cat04;DESSERTS;Desserts;Sweet treats to finish your meal;/img/cat-desserts.jpg;4;true
+cat05;COMBOS;Combo Deals;Value meals and combo offers;/img/cat-combos.jpg;5;true

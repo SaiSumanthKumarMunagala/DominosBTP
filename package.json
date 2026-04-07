@@ -1,0 +1,87 @@
+{
+  "name": "dominos-pizza-capm",
+  "version": "1.0.0",
+  "description": "Domino's Pizza Ordering & Delivery — SAP CAP Full-Stack Application with Integration Suite",
+  "repository": "https://github.com/your-org/dominos-pizza-capm",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "@sap/cds-hana": "^2",
+    "@sap/xssec": "^3",
+    "passport": "^0",
+    "express": "^4",
+    "uuid": "^9",
+    "@sap-cloud-sdk/http-client": "^3",
+    "@sap-cloud-sdk/connectivity": "^3",
+    "axios": "^1"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^7",
+    "@sap/ux-specification": "latest",
+    "@cap-js/sqlite": "^1",
+    "jest": "^29",
+    "rimraf": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "dev": "cds watch --profile development",
+    "build": "cds build --production",
+    "test": "jest --coverage",
+    "deploy:cf": "cf push",
+    "deploy:hana": "cds deploy --to hana",
+    "seed": "cds deploy --to sqlite --with-mock-data",
+    "clean": "rimraf gen dist node_modules"
+  },
+  "cds": {
+    "requires": {
+      "db": { "kind": "sql" },
+      "PaymentGateway": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "PaymentGateway",
+          "path": "/api/v1"
+        }
+      },
+      "DeliveryPartner": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "DeliveryPartner",
+          "path": "/api/v1"
+        }
+      },
+      "SMSNotification": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "SMSGateway",
+          "path": "/api"
+        }
+      },
+      "messaging": {
+        "kind": "enterprise-messaging",
+        "[development]": { "kind": "file-based-messaging" }
+      },
+      "[production]": {
+        "db": { "kind": "hana-cloud" },
+        "auth": { "kind": "xsuaa" }
+      },
+      "[development]": {
+        "db": {
+          "kind": "sqlite",
+          "credentials": { "database": "db.sqlite" }
+        },
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "customer": { "password": "customer", "roles": ["customer"] },
+            "store_mgr": { "password": "store", "roles": ["store_manager", "customer"] },
+            "admin": { "password": "admin", "roles": ["admin", "store_manager", "customer"] },
+            "delivery": { "password": "delivery", "roles": ["delivery_agent"] }
+          }
+        }
+      }
+    },
+    "hana": { "deploy-format": "hdbtable" },
+    "features": { "fiori_preview": true }
+  }
+}

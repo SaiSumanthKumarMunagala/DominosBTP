@@ -1,0 +1,19 @@
+ID;code;name;description;category_ID;basePrice;isVeg;isSpicy;isBestseller;isAvailable;calories;prepTimeMin
+mi01;MARG;Margherita;Classic delight with mozzarella cheese and tangy tomato sauce;cat01;8.99;true;false;true;true;200;12
+mi02;PEPPERONI;Pepperoni Feast;Loaded with double pepperoni and extra mozzarella;cat01;12.99;false;false;true;true;310;15
+mi03;VEGSUPR;Veggie Supreme;Garden-fresh mushrooms, peppers, onions, olives, and tomatoes;cat01;11.99;true;false;false;true;220;15
+mi04;MEATLOV;Meat Lovers;Pepperoni, sausage, ham, bacon, and ground beef;cat01;14.99;false;false;true;true;420;18
+mi05;BBQCHK;BBQ Chicken;Grilled chicken with smoky BBQ sauce and red onions;cat01;13.49;false;false;true;true;340;15
+mi06;HAWAI;Hawaiian;Ham and pineapple with mozzarella;cat01;11.49;false;false;false;true;290;14
+mi07;BUFWNG;Buffalo Wings;Crispy chicken wings tossed in spicy buffalo sauce;cat02;7.99;false;true;true;true;380;12
+mi08;GRLBRD;Garlic Bread;Freshly baked with garlic butter and herbs;cat02;4.99;true;false;true;true;180;8
+mi09;CHZBRD;Cheesy Garlic Bread;Garlic bread loaded with mozzarella and cheddar;cat02;6.49;true;false;false;true;260;10
+mi10;COKE;Coca-Cola;Classic 500ml bottle;cat03;2.49;true;false;false;true;140;0
+mi11;PEPSI;Pepsi;500ml bottle;cat03;2.49;true;false;false;true;150;0
+mi12;SPRITE;Sprite;500ml bottle;cat03;2.49;true;false;false;true;130;0
+mi13;CHOCLA;Choco Lava Cake;Warm, gooey chocolate cake with a molten center;cat04;5.99;true;false;true;true;310;10
+mi14;CINSTIC;Cinnamon Sticks;Golden-baked sticks with cinnamon sugar and icing dip;cat04;4.49;true;false;false;true;240;8
+mi15;COMBO1;Meal for 2;1 Medium Pizza + Garlic Bread + 2 Drinks;cat05;19.99;false;false;true;true;0;20
+mi16;COMBO2;Party Pack;2 Large Pizzas + Wings + Garlic Bread + 4 Drinks;cat05;39.99;false;false;true;true;0;30
+mi17;FRMGHTA;Farmhouse;Onions, capsicum, tomato, and mushroom on a cheese base;cat01;10.99;true;false;false;true;230;14
+mi18;PHILLY;Philly Cheese Steak;Sliced steak, peppers, onions, and provolone;cat01;14.49;false;false;false;true;380;16

@@ -1,0 +1,6 @@
+ID;name;phone;email;vehicleType;vehicleNumber;isAvailable;rating;totalDeliveries;store_ID
+da01;Tom Rider;+1-555-2001;tom.r@delivery.com;SCOOTER;NY-1234;true;4.8;320;str01
+da02;Sam Quick;+1-555-2002;sam.q@delivery.com;BIKE;SF-5678;true;4.6;210;str02
+da03;Lisa Speed;+1-555-2003;lisa.s@delivery.com;SCOOTER;CH-9012;true;4.9;450;str03
+da04;Jake Rush;+1-555-2004;jake.r@delivery.com;CAR;DA-3456;false;4.4;180;str04
+da05;Nina Fast;+1-555-2005;nina.f@delivery.com;SCOOTER;MI-7890;true;4.7;290;str05

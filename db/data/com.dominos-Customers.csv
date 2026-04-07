@@ -1,0 +1,6 @@
+ID;firstName;lastName;fullName;email;phone;loyaltyPoints;loyaltyTier;totalOrders
+c001;John;Doe;John Doe;john.doe@email.com;+1-555-1001;1250;SILVER;15
+c002;Jane;Smith;Jane Smith;jane.smith@email.com;+1-555-1002;3400;GOLD;42
+c003;Mike;Johnson;Mike Johnson;mike.j@email.com;+1-555-1003;200;BRONZE;3
+c004;Emily;Davis;Emily Davis;emily.d@email.com;+1-555-1004;5200;PLATINUM;68
+c005;Alex;Wilson;Alex Wilson;alex.w@email.com;+1-555-1005;800;SILVER;10

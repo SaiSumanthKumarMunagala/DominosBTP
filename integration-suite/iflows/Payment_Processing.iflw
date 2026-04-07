@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Integration Suite — Integration Flow: Payment_Processing
+  
+  ROUTE:
+    CAP Application → Integration Suite → Payment Gateway (Stripe/PayPal)
+  
+  STEPS:
+    1. Receive HTTP POST from CAP service
+    2. Content-based routing: select payment processor
+    3. Map CAP order payload → Gateway-specific format
+    4. Call external payment API with retry (3x, exponential backoff)
+    5. Map response back to CAP format
+    6. Return result to CAP
+    7. On failure: dead-letter queue + alert
+  
+  DEPLOYMENT:
+    Import this into SAP Integration Suite Design workspace.
+    Configure the credential aliases before deploying.
+-->
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:ifl="http://sap.com/ifl"
+                   id="Payment_Processing">
+    
+    <bpmn2:collaboration id="Payment_Processing_Collab">
+        <bpmn2:participant id="Participant_CAP" name="CAP Application" />
+        <bpmn2:participant id="Participant_IS" name="Integration Suite" />
+        <bpmn2:participant id="Participant_PG" name="Payment Gateway" />
+    </bpmn2:collaboration>
+
+    <!-- 
+      CONFIGURATION (set in Integration Suite):
+      
+      Credential Alias: StripeAPIKey
+      Endpoint: https://api.stripe.com/v1/payment_intents
+      
+      Credential Alias: PayPalClientId
+      Endpoint: https://api-m.paypal.com/v2/checkout/orders
+      
+      Content Modifier (before call):
+        Header: Authorization = Bearer ${property.apiKey}
+        Header: Content-Type = application/json
+        Header: Idempotency-Key = ${property.orderId}
+      
+      Request Mapping (Groovy Script):
+        def body = message.getBody(String)
+        def order = new JsonSlurper().parseText(body)
+        def mapped = [
+            amount: (order.amount * 100) as int,  // Stripe uses cents
+            currency: order.currency.toLowerCase(),
+            description: "Dominos Order ${order.orderNumber}",
+            receipt_email: order.customerEmail,
+            metadata: [orderId: order.orderId, orderNumber: order.orderNumber]
+        ]
+        message.setBody(JsonOutput.toJson(mapped))
+      
+      Response Mapping (Groovy Script):
+        def resp = new JsonSlurper().parseText(message.getBody(String))
+        def result = [
+            success: resp.status == 'succeeded',
+            transactionId: resp.id,
+            message: resp.status == 'succeeded' ? 'Payment processed' : resp.last_payment_error?.message,
+            timestamp: new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        ]
+        message.setBody(JsonOutput.toJson(result))
+      
+      Error Handling:
+        Retry: 3 attempts, exponential backoff (2s, 4s, 8s)
+        Dead Letter: Queue "payment_failures"
+        Alert: Email to ops-alerts@dominos.com
+    -->
+
+</bpmn2:definitions>

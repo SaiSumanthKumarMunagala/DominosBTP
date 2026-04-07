@@ -1,0 +1,35 @@
+{
+  "xsappname": "dominos-pizza-capm",
+  "tenant-mode": "dedicated",
+  "description": "Domino's Pizza CAPM Security",
+  "scopes": [
+    { "name": "$XSAPPNAME.customer",       "description": "Customer ordering" },
+    { "name": "$XSAPPNAME.store_manager",  "description": "Store operations" },
+    { "name": "$XSAPPNAME.delivery_agent", "description": "Delivery agent" },
+    { "name": "$XSAPPNAME.admin",          "description": "System admin" }
+  ],
+  "role-templates": [
+    {
+      "name": "Customer",
+      "scope-references": ["$XSAPPNAME.customer"]
+    },
+    {
+      "name": "StoreManager",
+      "scope-references": ["$XSAPPNAME.store_manager", "$XSAPPNAME.customer"]
+    },
+    {
+      "name": "DeliveryAgent",
+      "scope-references": ["$XSAPPNAME.delivery_agent"]
+    },
+    {
+      "name": "Admin",
+      "scope-references": ["$XSAPPNAME.admin", "$XSAPPNAME.store_manager", "$XSAPPNAME.customer"]
+    }
+  ],
+  "role-collections": [
+    { "name": "Dominos_Customer",       "role-template-references": ["$XSAPPNAME.Customer"] },
+    { "name": "Dominos_StoreManager",   "role-template-references": ["$XSAPPNAME.StoreManager"] },
+    { "name": "Dominos_DeliveryAgent",  "role-template-references": ["$XSAPPNAME.DeliveryAgent"] },
+    { "name": "Dominos_Admin",          "role-template-references": ["$XSAPPNAME.Admin"] }
+  ]
+}

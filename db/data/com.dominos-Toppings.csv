@@ -1,0 +1,19 @@
+ID;code;name;price;isVeg;isAvailable;category
+t01;MOZZ;Extra Mozzarella;1.50;true;true;CHEESE
+t02;CHED;Cheddar Cheese;1.50;true;true;CHEESE
+t03;PARM;Parmesan;1.50;true;true;CHEESE
+t04;PEPP;Pepperoni;2.00;false;true;MEAT
+t05;SAUS;Italian Sausage;2.00;false;true;MEAT
+t06;HAM;Ham;2.00;false;true;MEAT
+t07;BACON;Bacon Strips;2.50;false;true;MEAT
+t08;GRCHK;Grilled Chicken;2.50;false;true;MEAT
+t09;MUSH;Mushrooms;1.00;true;true;VEGGIE
+t10;ONION;Onions;0.75;true;true;VEGGIE
+t11;GRNPEP;Green Peppers;0.75;true;true;VEGGIE
+t12;OLIVE;Black Olives;1.00;true;true;VEGGIE
+t13;TOMATO;Fresh Tomatoes;0.75;true;true;VEGGIE
+t14;JALAP;Jalapeños;1.00;true;true;VEGGIE
+t15;PINEAP;Pineapple;1.00;true;true;VEGGIE
+t16;BBQSC;BBQ Sauce Drizzle;0.50;true;true;SAUCE
+t17;RANCH;Ranch Drizzle;0.50;true;true;SAUCE
+t18;HOTSC;Hot Sauce;0.50;true;true;SAUCE

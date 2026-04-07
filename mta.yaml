@@ -1,0 +1,87 @@
+_schema-version: '3.1'
+ID: dominos-pizza-capm
+version: 1.0.0
+description: Domino's Pizza Ordering & Delivery — SAP CAP with Integration Suite
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx cds build --production
+
+modules:
+  # ─── CAP Server ───
+  - name: dominos-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: dominos-db
+      - name: dominos-auth
+      - name: dominos-destination
+      - name: dominos-messaging
+
+  # ─── HANA Deployer ───
+  - name: dominos-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: dominos-db
+
+  # ─── App Router ───
+  - name: dominos-app
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      memory: 128M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: dominos-auth
+
+resources:
+  - name: dominos-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  - name: dominos-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: xs-security.json
+
+  - name: dominos-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+
+  - name: dominos-messaging
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: enterprise-messaging
+      service-plan: default
+      config:
+        emname: dominos-events
+        namespace: com/dominos
+        options:
+          management: true
+          messagingrest: true
