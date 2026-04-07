@@ -1,0 +1,7 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "cds.preview.ui5Version": "1.120",
+  "cds.preview.httpPort": 4004,
+  "files.exclude": { "gen/": true, "node_modules/": true }
+}
